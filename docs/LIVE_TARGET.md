@@ -5,6 +5,10 @@ host** and scanned by red-prompt exactly the way a customer's own endpoint would
 
 Source: [`app.py`](../app.py) · deploy files in the [repository root](..) · scanner: [red-prompt](https://github.com/KshaunishHarsha/red-prompt)
 
+> **Note on links.** This repository is public; the red-prompt repository it references
+> is not. Links into `redprompt/`, `mock/` and red-prompt's own `docs/` resolve only for
+> people with access to it. Everything needed to deploy and scan this target is here.
+
 ---
 
 ## 1. Why this exists (and why `mock/` wasn't enough)

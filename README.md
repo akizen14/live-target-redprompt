@@ -1,7 +1,7 @@
 # red-prompt live target — "Acme Support"
 
 A **deliberately vulnerable** AI customer-support application, built to be deployed on a
-real public HTTPS host and scanned by [red-prompt](https://github.com/KshaunishHarsha/red-prompt)
+real public HTTPS host and scanned by [red-prompt](https://www.red-prompt.org)
 exactly the way a customer's own endpoint would be.
 
 > **This is a security test fixture, not a product.** It is designed to fail. Every customer
@@ -80,7 +80,8 @@ turning a whole scan into silent false negatives.
 
 - [`docs/LIVE_TARGET.md`](docs/LIVE_TARGET.md) — the planted weaknesses, deployment, the
   vulnerable → fixed demo script, abuse controls, and troubleshooting.
-- [red-prompt](https://github.com/KshaunishHarsha/red-prompt) — the scanner this is a target for.
+- [red-prompt](https://www.red-prompt.org) — the scanner this is a target for. The source repository is
+  private; the links into it below resolve only if you have access.
 
 ## License
 
