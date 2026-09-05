@@ -1,0 +1,13 @@
+.git
+.gitignore
+.env
+.env.example
+venv/
+__pycache__/
+*.pyc
+docs/
+scripts/
+fly.toml
+render.yaml
+README.md
+LICENSE

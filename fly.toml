@@ -1,0 +1,32 @@
+# fly.toml - Acme Support live target
+# fly launch --no-deploy --copy-config   then   fly deploy
+app = "redprompt-target"
+primary_region = "sin"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  RP_TARGET_AUTH_SCHEME = "bearer"
+  DAILY_REQUEST_BUDGET = "3000"
+  RATE_LIMIT_RPS = "8"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # A scan must not hit a cold start mid-run: keep one machine always warm.
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

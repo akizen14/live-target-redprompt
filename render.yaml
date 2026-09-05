@@ -1,0 +1,59 @@
+# render.yaml — Render Blueprint for the Acme Support live target.
+#
+# This repo's root IS the application, so the Docker context is "." — do not
+# reintroduce a ./live-target prefix; that only applies when this tree is vendored
+# as a subdirectory of the red-prompt monorepo.
+#
+# PLAN: free. The free instance sleeps after ~15 minutes idle and a cold start
+# takes ~30-60s. A scan issues hundreds of sequential requests, so the first probe
+# will time out and red-prompt records that as the TARGET RESISTING THE ATTACK —
+# a false negative that looks like a clean result. Always warm the service before
+# a scan or a demo:
+#
+#     ./scripts/warm.sh https://<service>.onrender.com
+#
+# Upgrade to the starter plan to make that step unnecessary.
+services:
+  - type: web
+    name: redprompt-target
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: singapore
+    healthCheckPath: /health
+    envVars:
+      # ── Secrets: set in the Render dashboard, never committed. ──────────────
+      # sync: false means Render prompts for the value and keeps it out of git.
+      - key: RP_TARGET_API_KEY      # inbound key; without it the app 500s by design
+        sync: false
+      - key: RP_ADMIN_KEY           # /_control/* only; MUST differ from the above
+        sync: false
+      - key: GROQ_API_KEY           # upstream model
+        sync: false
+
+      # ── Upstream ───────────────────────────────────────────────────────────
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+
+      # ── Identity + auth surface ────────────────────────────────────────────
+      - key: RP_ADVERTISED_MODEL
+        value: acme-support-v1
+      - key: RP_TARGET_AUTH_SCHEME
+        value: bearer
+
+      # ── Abuse / cost controls ──────────────────────────────────────────────
+      # The budget is deliberately below a full Garak sweep (~4,400 prompts) so an
+      # accidental full run hits 429 instead of a bill.
+      - key: DAILY_REQUEST_BUDGET
+        value: "3000"
+      - key: RATE_LIMIT_RPS
+        value: "8"
+
+      # ── Output-token window: MAX must stay >= MIN. See .env.example. ───────
+      # A ceiling below the floor returns empty completions that every detector
+      # scores as the target resisting — a silently invalid scan.
+      - key: MIN_OUTPUT_TOKENS
+        value: "700"
+      - key: MAX_OUTPUT_TOKENS
+        value: "1024"
