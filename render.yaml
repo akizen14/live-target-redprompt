@@ -31,6 +31,12 @@ services:
         sync: false
       - key: GROQ_API_KEY           # upstream model
         sync: false
+      # Ownership proof. red-prompt's verification flow fetches
+      # /.well-known/redprompt-verify.txt and compares it to the token it issued.
+      # Set this in the Render dashboard to the token red-prompt shows you; until
+      # then the route returns 200 with an empty body and the check fails cleanly.
+      - key: RP_OWNERSHIP_TOKEN
+        sync: false
 
       # ── Upstream ───────────────────────────────────────────────────────────
       - key: GROQ_MODEL

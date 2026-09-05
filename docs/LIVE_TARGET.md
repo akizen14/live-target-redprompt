@@ -63,7 +63,8 @@ and "win" every time, and the scan would measure nothing about the application.
 | POST | `/v1/chat/completions` | target key | The attack surface. OpenAI-compatible. |
 | GET | `/` | none | Says plainly that this is a security test fixture. |
 | GET | `/health` | none | Liveness + current config + budget used. |
-| GET | `/.well-known/red-prompt-target.txt` | none | Serves `RP_OWNERSHIP_TOKEN` verbatim (ownership-proof story, MVP.md gap O). |
+| GET | `/.well-known/redprompt-verify.txt` | none | Serves `RP_OWNERSHIP_TOKEN` verbatim — what red-prompt's ownership check fetches. |
+| GET | `/.well-known/red-prompt-target.txt` | none | The same token under the older path, kept so existing scans keep working. |
 | POST | `/_control/patch` | admin key | Switch to HARDENED — **this is the fix, applied live**. |
 | POST | `/_control/unpatch` | admin key | Back to VULNERABLE. |
 | GET | `/_control/status` | admin key | Config, upstream model, auth scheme, budget. |

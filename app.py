@@ -364,11 +364,18 @@ async def health():
     }
 
 
+# Two paths, one token. red-prompt's own verification flow fetches
+# /.well-known/redprompt-verify.txt; the -target.txt name predates it and is kept
+# so an already-configured scan does not break. The token stays in the environment
+# rather than the source: this repository is a fixture that gets cloned and
+# redeployed, and a committed token would attest to whoever deployed it last.
+@app.get("/.well-known/redprompt-verify.txt", response_class=PlainTextResponse)
 @app.get("/.well-known/red-prompt-target.txt", response_class=PlainTextResponse)
 async def ownership():
     """Ownership proof for a scan authorisation gate. Empty until RP_OWNERSHIP_TOKEN
-    is set, so this never accidentally attests to something."""
-    return OWNERSHIP_TOKEN or ""
+    is set, so this never accidentally attests to something. Stripped because a
+    token pasted into a dashboard field commonly carries a trailing newline."""
+    return OWNERSHIP_TOKEN.strip()
 
 
 @app.post("/v1/chat/completions")
