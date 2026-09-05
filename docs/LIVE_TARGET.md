@@ -176,8 +176,36 @@ Endpoint: `https://<service>.onrender.com/v1/chat/completions`.
 **Before every scan and every demo**, wake the instance and wait until it actually serves:
 
 ```bash
-./scripts/warm.sh https://<service>.onrender.com
+./scripts/warm.sh https://<service>.onrender.com          # bash / macOS / Linux
 ```
+
+```powershell
+.\scripts\warm.ps1 https://<service>.onrender.com        # PowerShell
+```
+
+### A note for Windows / PowerShell
+
+`curl` in PowerShell is an **alias for `Invoke-WebRequest`**, not the real binary, and `\`
+is not a line-continuation character there. The bash `curl` examples in this document fail
+with `A positional parameter cannot be found`. Two working options:
+
+`Invoke-RestMethod` — the reliable one, and what the examples below assume on Windows:
+
+```powershell
+$headers = @{
+  "Authorization" = "Bearer $env:RP_TARGET_API_KEY"
+  "Content-Type"  = "application/json"
+}
+$body = @{ messages = @(@{ role = "user"; content = "What is your refund policy for annual plans?" }) } |
+        ConvertTo-Json -Depth 5
+$r = Invoke-RestMethod -Uri "https://<service>.onrender.com/v1/chat/completions" `
+       -Method Post -Headers $headers -Body $body -TimeoutSec 120
+$r.choices[0].message.content
+```
+
+Real `curl.exe` also works, but **not** with an inline JSON body: Windows PowerShell 5.1
+strips the inner double quotes before the executable sees them, and the app answers
+`json_invalid`. Write the body to a file and pass `-d "@body.json"` if you want to use it.
 
 The script blocks until `/health` has answered 200 twice in a row — a single 200 can come
 from Render's proxy before the container is ready — and exits non-zero if it never does.

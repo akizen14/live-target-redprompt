@@ -60,8 +60,15 @@ after ~15 minutes idle**, and a cold start makes the first probe of a scan time 
 red-prompt scores as the target *resisting the attack*. Always warm it first:
 
 ```bash
-./scripts/warm.sh https://<service>.onrender.com
+./scripts/warm.sh  https://<service>.onrender.com     # bash
 ```
+```powershell
+.\scripts\warm.ps1 https://<service>.onrender.com    # PowerShell
+```
+
+**On Windows:** `curl` is a PowerShell alias for `Invoke-WebRequest`, not the real binary,
+and PowerShell 5.1 strips the inner quotes out of an inline JSON body before `curl.exe` sees
+it. Use `Invoke-RestMethod` — see [`docs/LIVE_TARGET.md` §4](docs/LIVE_TARGET.md).
 
 Full instructions, including the Fly.io always-on alternative, are in
 [`docs/LIVE_TARGET.md` §4](docs/LIVE_TARGET.md).

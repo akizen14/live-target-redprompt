@@ -7,3 +7,6 @@
 # plan, so it must run from a Windows checkout without a manual fix.
 *.sh text eol=lf
 Dockerfile text eol=lf
+
+# PowerShell handles either ending; pin CRLF so the file reads native on Windows.
+*.ps1 text eol=crlf
